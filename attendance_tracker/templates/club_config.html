@@ -2,39 +2,29 @@
 {% block title %} Clubs {% endblock %}
 
 {% block content %}
-<div class="w-full max-w-md mx-auto bg-white p-8 rounded-xl shadow-md">
+<div class="main-content justify justify-items-center">
   <form action="{{ url_for('admin.club_config', club_name=club_name) }}" method="post" class="space-y-6">
+    Club configuration
+    <div class="flex justify-center mt-10">
+      <div>
+        {% for field in club %}
+        <div class="flex items-center justify-between space-x-2">
+          <label for="{{ field }}" class="flex-1 text-lg font-[Proxima Nova] text-gray-700">
+            {{ field }}
+          </label>
+          <input
+            id="{{ field }}"
+            name="{{ field }}"
+            type="text"
+            class="min-w-0 flex-1 border border-gray-300 rounded-md px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-cougCrimson focus:border-transparent transition duration-150"
+          >
+      </div>
+        {% endfor %}
 
-    <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">
-      Club Configuration
-    </h2>
-
-    <div class="flex justify-between text-lg font-medium text-gray-800 border-b pb-2">
-      <span></span>
-      <span>New Value</span>
-    </div>
-    {% for field in club %}
-    <div class="flex items-center justify-between space-x-4">
-      <label for="{{ field }}" class="flex-1 text-lg font-[Proxima Nova] text-gray-700">
-        {{ field }}
-      </label>
-      <input
-        id="{{ field }}"
-        name="{{ field }}"
-        type="text"
-        class="min-w-0 flex-1 border border-gray-300 rounded-md px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-cougCrimson focus:border-transparent transition duration-150"
-      >
-    </div>
-    {% endfor %}
-
-    <button
-      type="submit"
-      class="w-full bg-cougCrimson hover:bg-cougRed text-white font-[Proxima Nova] py-2.5 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
-    >
-      Submit
+    <button type="submit" class="button-element">
+      Save changes
     </button>
   </form>
 </div>
-
 
 {% endblock %}

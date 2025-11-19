@@ -29,7 +29,7 @@ CREATE TABLE room_log (
     building TEXT,
     room_num INTEGER,
     assigned_club TEXT,
-    PRIMARY KEY (assigned_club),
+    PRIMARY KEY (building, room_num),
     FOREIGN KEY (assigned_club) REFERENCES CLUB_DATA (club_name)
 );
 

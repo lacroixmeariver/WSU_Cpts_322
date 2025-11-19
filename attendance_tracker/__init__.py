@@ -9,12 +9,14 @@ import sqlite3
 
 import click
 import flask
+from flask_apscheduler import APScheduler
 
 from attendance_tracker.app import AttendanceTracker
 from attendance_tracker.controllers.admin import ADMIN
 from attendance_tracker.controllers.analytics import ANALYTICS
 from attendance_tracker.controllers.auth import AUTH
 from attendance_tracker.controllers.ingest import INGEST
+from attendance_tracker.email.emailList import send_error_email, send_report_email
 
 
 def _init_db(db_path: pathlib.Path) -> None:
@@ -42,6 +44,9 @@ def _send_email_test(db_path: pathlib.Path) -> None:
     """Send a test email to all admin emails."""
     import attendance_tracker.email.emailList as emailList
 
+    emailList.remove_club_temp(db_path, "Demo Club 1")
+    emailList.add_club_temp(db_path, "Demo Club 1", "dylan")
+    emailList.assign_room_temp(db_path, "Dana", "215", "Demo Club 1")
     emailList.remove_admin_email(db_path, "dylan.kopitzke@wsu.edu")
     emailList.add_admin_email(db_path, "dylan.kopitzke@wsu.edu")
     emailList.send_error_email(db_path)
@@ -101,11 +106,33 @@ def _model_data_with_date():
 def create_app() -> AttendanceTracker:
     """Entry point for flask app."""
     app = AttendanceTracker(__name__, instance_relative_config=True)
+    scheduler = APScheduler()
 
     db_path = pathlib.Path("./sqlite/attendance_tracker.db")
     if not db_path.exists():  # if dir does not exist mkdir + db
         db_path.parent.mkdir(exist_ok=True)
         db_path.touch()
+
+    # schedule email jobs for first min of 9am on mondays and 1st of month
+    scheduler.add_job(
+        func=send_error_email,
+        trigger="cron",
+        id="weekly_email_start",
+        day_of_week=0,
+        hour=9,
+        minute=0,
+        args=[app.config["DATABASE"]],
+    )
+    scheduler.add_job(
+        func=send_report_email,
+        trigger="cron",
+        id="monthly_email_start",
+        day=1,
+        hour=9,
+        minute=0,
+        args=[app.config["DATABASE"]],
+    )
+    scheduler.start()
 
     # get secret to save in config for session handling
     with pathlib.Path("./.env").open("r", encoding="utf-8") as env:

@@ -15,7 +15,8 @@ dependencies = [
     "flask",
     "Jinja2",
     "imap_tools",
-    "smtplib",
+    "apscheduler",
+    "Flask-APScheduler",
 ]
 
 [project.optional-dependencies]

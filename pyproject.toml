@@ -14,6 +14,8 @@ dependencies = [
     "requests",
     "flask",
     "Jinja2",
+    "imap_tools",
+    "smtplib",
 ]
 
 [project.optional-dependencies]
@@ -24,8 +26,6 @@ dev = [
     "isort",
     "pyright",
     "pytailwindcss",
-    "imap_tools",
-    "smtplib",
 ]
 
 [tool.setuptools.packages.find]

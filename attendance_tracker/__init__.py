@@ -42,6 +42,7 @@ def _send_email_test(db_path: pathlib.Path) -> None:
     """Send a test email to all admin emails."""
     import attendance_tracker.email.emailList as emailList
 
+    emailList.remove_admin_email(db_path, "dylan.kopitzke@wsu.edu")
     emailList.add_admin_email(db_path, "dylan.kopitzke@wsu.edu")
     emailList.send_error_email(db_path)
     emailList.send_report_email(db_path)

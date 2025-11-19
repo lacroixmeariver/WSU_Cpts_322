@@ -38,6 +38,15 @@ def _load_from_email(db_path: pathlib.Path) -> None:
     download_csv._load_from_email(db_path)
 
 
+def _send_email_test(db_path: pathlib.Path) -> None:
+    """Send a test email to all admin emails."""
+    import attendance_tracker.email.emailList as emailList
+
+    emailList.add_admin_email(db_path, "dylan.kopitzke@wsu.edu")
+    emailList.send_error_email(db_path)
+    emailList.send_report_email(db_path)
+
+
 def _model_data_with_date():
     room_names = ["Demo Club 1", "Demo Club 2", "Demo Club 3"]
     today = datetime.date.today()
@@ -118,6 +127,12 @@ def create_app() -> AttendanceTracker:
         callback=functools.partial(_load_from_email, db_path),
     )
     app.cli.add_command(load_db_cmd)  # register data load as flask cmd
+
+    send_email_cmd = click.Command(
+        "send-email-test",
+        callback=functools.partial(_send_email_test, db_path),
+    )
+    app.cli.add_command(send_email_cmd)  # register send email test as flask cmd
 
     generate_sample_data = click.Command(
         "gen-sample-data",

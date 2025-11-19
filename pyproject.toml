@@ -25,6 +25,7 @@ dev = [
     "pyright",
     "pytailwindcss",
     "imap_tools",
+    "smtplib",
 ]
 
 [tool.setuptools.packages.find]

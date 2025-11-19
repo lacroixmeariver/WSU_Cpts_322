@@ -121,7 +121,7 @@ def create_app() -> AttendanceTracker:
         day_of_week=0,
         hour=9,
         minute=0,
-        args=[app.config["DATABASE"]],
+        args=[db_path],
     )
     scheduler.add_job(
         func=send_report_email,
@@ -130,7 +130,7 @@ def create_app() -> AttendanceTracker:
         day=1,
         hour=9,
         minute=0,
-        args=[app.config["DATABASE"]],
+        args=[db_path],
     )
     scheduler.start()
 

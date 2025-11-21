@@ -13,19 +13,65 @@ from smtplib import SMTP
 from dotenv import load_dotenv
 
 
-def configure():
+def configure(db_path: Path) -> None:
     """Set up the dotenv via load_dotenv."""
     load_dotenv()
+    # add permanent superadmins
+    # remove and re-add to avoid duplicates
+    # remove_admin_email(db_path,"gary.offerdahl@wsu.edu")
+    # remove_admin_email(db_path,"maynard.siev@wsu.edu")
+    # remove_admin_email(db_path,"vcea.studentclubs@wsu.edu")
+    # add_admin_email(db_path,"gary.offerdahl@wsu.edu", True)
+    # add_admin_email(db_path,"maynard.siev@wsu.edu", True)
+    # add_admin_email(db_path,"vcea.studentclubs@wsu.edu", True)
 
 
-def add_admin_email(db_path: Path, email: str) -> None:
+# TODO: UNCOMMENT THE PERMANENT SUPERADMIN EMAILS BEFORE DEPLOYMENT
+# TODO: COMMENTED OUT TO PREVENT SPAMMING USERS DURING TESTING
+
+
+def add_admin_email(db_path: Path, email: str, permanent: bool = False) -> None:
     """Add an admin email to the admin_emails table."""
+    # permanent is only used for superadmins
+    # default to False for normal admins
+    try:
+        with sqlite3.connect(db_path) as conn:
+            conn.execute(
+                "INSERT INTO admin_emails (admin_email, permanent) VALUES (?,?)",
+                (email, permanent),
+            )
+        print(f"Added admin email: {email}")
+    except sqlite3.IntegrityError:
+        print(f"Admin email {email} already exists, not adding duplicate.")
+
+
+def remove_admin_email(db_path: Path, email: str) -> None:
+    """Remove an admin email from the admin_emails table."""
+    try:
+        if is_permanent_admin(db_path, email):
+            print(f"Admin email {email} is a permanent superadmin, cannot remove through webapp.")
+            return
+        with sqlite3.connect(db_path) as conn:
+            conn.execute(
+                "DELETE FROM admin_emails WHERE admin_email = ?",
+                (email,),
+            )
+        print(f"Removed admin email: {email}")
+    except sqlite3.IntegrityError:
+        print(f"Admin email {email} does not exist, cannot remove.")
+
+
+def is_permanent_admin(db_path: Path, email: str) -> bool:
+    """Check if an admin email is permanent."""
     with sqlite3.connect(db_path) as conn:
-        conn.execute(
-            "INSERT INTO admin_emails (admin_email) VALUES (?)",
+        cursor = conn.execute(
+            "SELECT permanent FROM admin_emails WHERE admin_email = ?",
             (email,),
         )
-    print(f"Added admin email: {email}")
+        result = cursor.fetchone()
+        if result:
+            return bool(result[0])
+    return False
 
 
 def add_club_temp(db_path: Path, club_name: str, club_president: str) -> None:
@@ -68,16 +114,6 @@ def remove_room_temp(db_path: Path, building: str, room_num: str) -> None:
     print(f"Removed room assignment: {building} {room_num}")
 
 
-def remove_admin_email(db_path: Path, email: str) -> None:
-    """Remove an admin email from the admin_emails table."""
-    with sqlite3.connect(db_path) as conn:
-        conn.execute(
-            "DELETE FROM admin_emails WHERE admin_email = ?",
-            (email,),
-        )
-    print(f"Removed admin email: {email}")
-
-
 def get_admin_emails(db_path: Path) -> list[str]:
     """Retrieve all admin emails from the admin_emails table."""
     with sqlite3.connect(db_path) as conn:
@@ -89,7 +125,7 @@ def get_admin_emails(db_path: Path) -> list[str]:
 
 def send_email_to_admins(db_path: Path, email_content: MIMEMultipart) -> None:
     """Send an email to all admin emails."""
-    configure()
+    configure(db_path)
     mail_password = os.getenv("mail_password")
     mail_sender = os.getenv("mail_username")
 

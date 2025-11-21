@@ -46,5 +46,6 @@ CREATE TABLE email_log(
 
 CREATE TABLE admin_emails(
     admin_email Text,
+    permanent Boolean,
     PRIMARY KEY (admin_email)
 );

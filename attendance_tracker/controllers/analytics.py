@@ -18,8 +18,16 @@ ANALYTICS = Blueprint(
 )
 
 
-@ANALYTICS.route("/data-view", methods=["GET", "POST"])
-def data_view() -> flask.Response | str:
+@ANALYTICS.route("/home", methods=["GET"])
+def home() -> str:
+    """Home page for navigating to analytic functions."""
+    return flask.render_template(
+        "analytics_home.html",  # make actual home page later
+    )
+
+
+@ANALYTICS.route("/room-activity", methods=["GET", "POST"])
+def room_activity() -> flask.Response | str:
     """View data based on query entered using form."""
     with flask.current_app.app_context():
         conn: sqlite3.Connection = flask.current_app.get_db()  # type: ignore
@@ -32,7 +40,7 @@ def data_view() -> flask.Response | str:
         start = flask.request.form.get("start_date", "")
         end = flask.request.form.get("end_date", "")
         result = re.match(r"(.+) (\d+)", location)
-        duration = flask.request.form.get("duration", "").strip()
+        duration = flask.request.form.get("duration", "")
 
         if duration != "Custom":  # user choose query relative to today!
             match duration.split():
@@ -104,7 +112,7 @@ def data_view() -> flask.Response | str:
 
     # TODO (Gavin): Add debounce on form submit so we dont lock DB lol
     return flask.render_template(
-        "data_view.html",
+        "room_activity.html",
         chart_config=json.dumps(chart_config),
         summary_table=summary_table,
         locations=locations,
@@ -120,8 +128,25 @@ def usage() -> str:
 
     if flask.request.method == "POST":
         # read form inputs
-        start = flask.request.form.get("start_date") or ""
-        end = flask.request.form.get("end_date") or ""
+        start = flask.request.form.get("start_date", "")
+        end = flask.request.form.get("end_date", "")
+        duration = flask.request.form.get("duration", "")
+        descending = flask.request.form.get("descending") is not None
+
+        if duration != "Custom":  # user choose query relative to today!
+            match duration.split():
+                case [d, "weeks"]:
+                    num_weeks = int(d)  # its already weeks
+                case [d, "month" | "months"]:
+                    num_weeks = int(d) * 4  # month -> weeks
+                case [d, "year" | "years"]:
+                    num_weeks = int(d) * 52  # year -> weeks
+                case _:
+                    # should only get here if input is changed without testing later...
+                    msg = f"unexpected duration {duration}"
+                    raise ValueError(msg)
+            end = datetime.today().strftime("%Y-%m-%d")
+            start = (datetime.today() - timedelta(weeks=num_weeks)).strftime("%Y-%m-%d")
 
         if start and end:
             query = """
@@ -134,11 +159,9 @@ def usage() -> str:
                         date_entered BETWEEN ? AND ?
                     GROUP BY
                         location
-                    ORDER BY
-                        num_accesses DESC;
                     """
             results = conn.execute(
-                query,
+                query + f"ORDER BY num_accesses {'DESC' if descending else 'ASC'};",
                 (start, end),
             ).fetchall()
             x_axis = []

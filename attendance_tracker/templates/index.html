@@ -5,12 +5,56 @@
 
 <!-- Page name -->
 {% block name %}
-  <div class="min-h-screen flex items-center justify-center p-4">
-    <h1>{{name}}</h1>
-  </div>
+  {{ name }}
 {% endblock %}
 
 <!-- Page content -->
 {% block content %}
-  {# page specific content goes here #}
+  <div class="min-h-screen w-3/4 mx-auto flex flex-col items-center text-center py-10">
+
+    <h1 class="text-3xl font-bold mb-8">Club Attendance Tracker Project</h1>
+
+    <div class="text-sm text-left leading-relaxed space-y-4 w-full">
+      <p>
+        <strong>Welcome to app home page!</strong> This project was created
+        for the purpose of increasing visibility of WSU club room usage.
+        Originally started as a student project for the CptS 322 Software Engineering
+        course, the project aims to give club members and club admin basic tools to assist
+        with making data informed decisions regarding club resources. Data available through
+        the analytics pages are sourced from WSU's IT group and include anonymized building
+        access data. The app covers several functions accessible through the navigation bar
+        in the top right corner of the screen. Brief descriptions of each app section will be
+        described below!
+      </p>
+
+      <p>
+        <strong>Login page.</strong> As expected, the login page allows admin users to
+        log into the system in order to access privileged pages containing data configuration
+        features. Unauthenticated users attempting to access protected admin pages will be redirected
+        back to the home page! Full description of admin pages will follow.
+      </p>
+
+      <p>
+        <strong>Admin pages.</strong> As mentioned previously, admin pages allow authenticated
+        users to add and modify existing club information. These resources are available through
+        several pages:
+      </p>
+
+      <ul class="list-disc pl-6 space-y-2">
+        <li><strong>Add Club page:</strong> record the creation of a new club.</li>
+        <li><strong>Assign Room page:</strong> link an existing club to a room.</li>
+        <li><strong>View Clubs:</strong> View all registered clubs in a table format, follow an edit link modify any entry.</li>
+      </ul>
+
+      <p>
+        <strong>Analytics pages.</strong> The analytics pages offer two simple views for looking at
+        room usage over time. Both views are based on room accesses by date.
+      </p>
+
+      <ul class="list-disc pl-6 space-y-2">
+        <li><strong>Activity Trend page:</strong> see weekly access trends for a space over a selected date range.</li>
+        <li><strong>Room Usage page:</strong> See cumulative accesses for a set of spaces over a selected date range.</li>
+      </ul>
+    </div>
+  </div>
 {% endblock %}

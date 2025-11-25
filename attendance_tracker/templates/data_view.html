@@ -15,7 +15,7 @@
             <!-- Room selections -->
             <div class="bg-white text-black border text-sm rounded-lg">
                 <label for="location" class="block text-sm font-medium text-white dark:text-gray-200">Choose a room:</label>
-                <select name="location" id="location-select">
+                <select name="location" id="location-select" required>
                     <option value="" class="mt-1.5 w-full rounded-lg border bg-white">Choose a location</option>
                             {% for building, room in locations %}
                                 <option>{{ building}} {{ room }}</option>
@@ -25,12 +25,21 @@
 
             <!-- Timeframe options -->
             <div class="bg-white text-black border text-sm rounded-lg">
+                <label for="location" class="block text-sm font-medium text-white dark:text-gray-200">Choose a duration:</label>
+                <select name="duration" id="duration-select">
+                    <option value="Custom" class="mt-1.5 w-full rounded-lg border bg-white"> Custom </option>
+                            {% for d, unit in [(2, "weeks"), (1, "month"), (3, "months"), (6, "months"), (1, "year")] %}
+                                <option>{{ d }} {{ unit }}</option>
+                            {% endfor %}
+                </select>
+            </div>
+            <div class="bg-white text-black border text-sm rounded-lg">
                 <label for="start_date" class="block text-sm font-medium text-white dark:text-gray-200">Choose a time period:</label>
-                <input type="date" name="start_date" required id="start_date">
+                <input type="date" name="start_date" id="start_date">
             </div>
             <div class="bg-white text-black border text-sm rounded-lg">
                 <label for="end_date" class="block text-sm font-medium text-white dark:text-gray-200">Choose a time period:</label>
-                <input type="date" name="end_date" required id="end_date">
+                <input type="date" name="end_date" id="end_date">
                 </select>
             </div>
 

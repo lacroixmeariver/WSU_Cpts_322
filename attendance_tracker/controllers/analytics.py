@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import sqlite3
+from datetime import datetime, timedelta
 from typing import Literal, NamedTuple, Sequence, TypedDict
 
 import flask
@@ -27,10 +28,26 @@ def data_view() -> flask.Response | str:
 
     if flask.request.method == "POST":
         # read form inputs
-        location = flask.request.form.get("location") or ""
-        start = flask.request.form.get("start_date") or ""
-        end = flask.request.form.get("end_date") or ""
+        location = flask.request.form.get("location", "")
+        start = flask.request.form.get("start_date", "")
+        end = flask.request.form.get("end_date", "")
         result = re.match(r"(.+) (\d+)", location)
+        duration = flask.request.form.get("duration", "").strip()
+
+        if duration != "Custom":  # user choose query relative to today!
+            match duration.split():
+                case [d, "weeks"]:
+                    num_weeks = int(d)  # its already weeks
+                case [d, "month" | "months"]:
+                    num_weeks = int(d) * 4  # month -> weeks
+                case [d, "year" | "years"]:
+                    num_weeks = int(d) * 52  # year -> weeks
+                case _:
+                    # should only get here if input is changed without testing later...
+                    msg = f"unexpected duration {duration}"
+                    raise ValueError(msg)
+            end = datetime.today().strftime("%Y-%m-%d")
+            start = (datetime.today() - timedelta(weeks=num_weeks)).strftime("%Y-%m-%d")
 
         if all((location, start, end)) and result is not None:
             building, room = result.groups()

@@ -38,17 +38,17 @@ def test_navbar_links_logged_out(driver):
         assert page_url in driver.current_url
 
 
-def test_user_login(driver):
+def test_user_register(driver):
     """Testing login feature."""
-    driver.get("http://127.0.0.1:5000/h/auth/login")
-    driver.implicitly_wait(0.5)
+    driver.get("http://127.0.0.1:5000/h/auth/sign-up")
+    driver.implicitly_wait(2)
 
-    # TODO [Ingrid]: write general login test
-    # current test based off test login creds in db
-    driver.find_element(by=By.NAME, value="uid").send_keys("test")
-    driver.find_element(by=By.NAME, value="pw").send_keys("password")
+    username_form = driver.find_element(by=By.ID, value="uid-form")
+    username_form.send_keys("test_username")
+    password_form = driver.find_element(by=By.ID, value="pw-form")
+    password_form.send_keys("test_password")
     sign_in = driver.find_element(by=By.ID, value="sign-in-button")
     sign_in.click()
-    driver.implicitly_wait(0.5)
+    driver.implicitly_wait(2)
     log_out_button = driver.find_element(by=By.ID, value="log-out-button")
     assert log_out_button.is_displayed()

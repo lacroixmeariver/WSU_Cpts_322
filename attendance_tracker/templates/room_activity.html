@@ -10,12 +10,12 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <div class="flex justify-center gap-2">
-        <form action="/h/analytics/data-view" method="post">
+        <form action="{{ url_for('analytics.room_activity') }}" method="post">
 
             <!-- Room selections -->
             <div class="bg-white text-black border text-sm rounded-lg">
-                <label for="location" class="block text-sm font-medium text-white dark:text-gray-200">Choose a room:</label>
-                <select name="location" id="location-select">
+                <label for="location" class="block text-sm font-medium text-black">Choose a room:</label>
+                <select name="location" id="location-select" required>
                     <option value="" class="mt-1.5 w-full rounded-lg border bg-white">Choose a location</option>
                             {% for building, room in locations %}
                                 <option>{{ building}} {{ room }}</option>
@@ -25,12 +25,21 @@
 
             <!-- Timeframe options -->
             <div class="bg-white text-black border text-sm rounded-lg">
-                <label for="start_date" class="block text-sm font-medium text-white dark:text-gray-200">Choose a time period:</label>
-                <input type="date" name="start_date" required id="start_date">
+                <label for="duration" class="block text-sm font-medium text-black">Choose a duration:</label>
+                <select name="duration" id="duration-select">
+                    <option value="Custom" class="mt-1.5 w-full rounded-lg border bg-white"> Custom </option>
+                            {% for d, unit in [(2, "weeks"), (1, "month"), (3, "months"), (6, "months"), (1, "year")] %}
+                                <option>{{ d }} {{ unit }}</option>
+                            {% endfor %}
+                </select>
             </div>
             <div class="bg-white text-black border text-sm rounded-lg">
-                <label for="end_date" class="block text-sm font-medium text-white dark:text-gray-200">Choose a time period:</label>
-                <input type="date" name="end_date" required id="end_date">
+                <label for="start_date" class="block text-sm font-medium text-black">Choose a time period:</label>
+                <input type="date" name="start_date" id="start_date">
+            </div>
+            <div class="bg-white text-black border text-sm rounded-lg">
+                <label for="end_date" class="block text-sm font-medium text-black">Choose a time period:</label>
+                <input type="date" name="end_date" id="end_date">
                 </select>
             </div>
 
@@ -42,7 +51,7 @@
             <caption class="border bg-white border-black text-lg font-bold" >Summary Statistics</caption>
             <thead>
                 <tr>
-                    <th scope="col" class="border border-black text-center p-2" >Number of Accesses</th>
+                    <th scope="col" class="border border-black text-center p-2" >Accesses per Week</th>
                     <th scope="col" class="border border-black text-center p-2" >Value</th>
                     <th scope="col" class="border border-black text-center p-2" >When</th>
                 </tr>

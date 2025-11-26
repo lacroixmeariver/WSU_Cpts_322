@@ -10,8 +10,8 @@ COPY sqlite ./sqlite
 COPY pyproject.toml ./
 COPY .env ./
 
-# create virtual env, activate it, and download deps
-# note: RUN commands execute at image creatino, CMD runs every startup :)
+# download deps
+# note: RUN commands execute at image creation, CMD runs every startup :)
 RUN python -m pip install .
 
 # start up prod server

@@ -14,18 +14,30 @@
 
             <!-- Timeframe options -->
             <div class="bg-white text-black border text-sm rounded-lg">
-                <label for="start_date" class="block text-sm font-medium text-white dark:text-gray-200">Choose a time period:</label>
-                <input type="date" name="start_date" required id="start_date">
-            </div>
-            <div class="bg-white text-black border text-sm rounded-lg">
-                <label for="end_date" class="block text-sm font-medium text-white dark:text-gray-200">Choose a time period:</label>
-                <input type="date" name="end_date" required id="end_date">
+                <label for="duration" class="block text-sm font-medium text-black">Choose a duration:</label>
+                <select name="duration" id="duration-select">
+                    <option value="Custom" class="mt-1.5 w-full rounded-lg border bg-white"> Custom </option>
+                            {% for d, unit in [(2, "weeks"), (1, "month"), (3, "months"), (6, "months"), (1, "year")] %}
+                                <option>{{ d }} {{ unit }}</option>
+                            {% endfor %}
                 </select>
             </div>
-
+            <div class="bg-white text-black border text-sm rounded-lg">
+                <label for="start_date" class="block text-sm font-medium text-black">Choose a time period:</label>
+                <input type="date" name="start_date" id="start_date">
+            </div>
+            <div class="bg-white text-black border text-sm rounded-lg">
+                <label for="end_date" class="block text-sm font-medium text-black">Choose a time period:</label>
+                <input type="date" name="end_date" id="end_date">
+                </select>
+            </div>
+            <div class="bg-white text-black border text-sm rounded-lg">
+                <label for="descending" class="block text-sm font-medium text-black">Highest to lowest</label>
+                <input type="checkbox" name="descending" id="descending">
+                </select>
+            </div>
             <!-- Button -->
-            <div class="button bg-cougCrimson text-white border text-sm rounded-lg py-2">
-                <button type="submit">Submit</button>
+            <button class="justify-center button-element bg-color" type="submit">Submit</button>
             </div>
         </form>
     </div>

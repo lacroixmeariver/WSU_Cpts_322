@@ -1,14 +1,5 @@
 @import "tailwindcss";
 
-/* @layer base {
-    :root {
-        --color-cougCrimson: #A60F2D;
-        --color-cougRed: #CA1237;
-        --color-cougGray: #4D4D4D;
-        --font-display: "Proxima Nova", "sans-serif"
-    }
-} */
-
 @theme {
 
     --color-cougar-crimson: #A60F2D;

@@ -11,8 +11,9 @@ authors = [ # put your name, email here!
     {name = "Ingrid Llorente", email = "Ingrid.llorente@wsu.edu"}
 ]
 dependencies = [
-    "requests",
     "flask",
+    "gunicorn",
+    "imap_tools",
     "Jinja2",
 ]
 
@@ -29,8 +30,10 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["attendance_tracker"]
 
+[tool.black]
+line-length = 120
 [tool.ruff]
-line-length = 80 # max line length
+line-length = 120 # max line length
 select = [
     "E", # code style errs
     "W", # code style warnings

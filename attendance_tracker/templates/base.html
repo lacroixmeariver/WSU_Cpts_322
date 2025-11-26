@@ -2,7 +2,7 @@
 <html lang="en" class="h-full">
     <head>
         <!-- Title of the individual page (appears in tab) -->
-        <title>{% block title %}{{title}}{% endblock %}</title>
+        <title>{{title}}</title>
             <link href="{{ url_for('static', filename='style.css')}}" rel="stylesheet">
     </head>
 
@@ -21,7 +21,7 @@
                     <a href=" {{ url_for('admin.admin_profile') }} ">
                         Admin
                     </a>
-                    <a href=" {{ url_for('analytics.data_view') }} ">
+                    <a href=" {{ url_for('analytics.home') }} ">
                         Data
                     </a>
                     <a href=" {{ url_for('auth.login') }} ">

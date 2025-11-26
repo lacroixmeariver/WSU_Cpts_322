@@ -16,11 +16,12 @@
                     </div>
                 </div>
 
-
+                <!-- card for summary stats -->
                 <div class="bg-white rounded-lg shadow">
                     <div class="flex items-center justify-between p-4 border-b border-gray-200">
                         <h2 class="text-lg font-semibold">Summary Statistics</h2>
                     </div>
+                    <!-- if the stats exist the table will populate -->
                     {% if summary_table %}
                     <div id="stats-content" class="p-4">
                         <table class="w-full">
@@ -43,7 +44,7 @@
                         </table>
                     </div>
                     {% else %}
-                        <!-- absence of data message -->
+                        <!-- absence of data gets user a cute cat -->
                         <div class="p-8 text-center">
                             <img class="mx-auto w-32 h-32 mt-20 opacity-65 p-6"
                             src=" {{ url_for('static', filename='images/sleepy_cat.png') }} " alt="">
@@ -111,6 +112,7 @@
         </div>
    </main>
 
+   <!-- script for chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const ctx = document.getElementById("data-view");

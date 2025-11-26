@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 <!-- Page title -->
-{% block title %}{{title}}{% endblock %}
+{{title}}
 
 <!-- Page content -->
 {% block content %}
-<div class="flex items-center justify-center p-20">
+<main class="flex-1 flex items-center justify-center px-6 py-8">
   <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
     {% if not authenticated %}
     <h2 class="text-2xl text-gray-900 mb-6 text-center">Sign In</h2>
@@ -47,5 +47,5 @@
     </form>
     {% endif %}
   </div>
-</div>
+</main>
 {% endblock %}

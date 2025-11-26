@@ -6,46 +6,61 @@
             <link href="{{ url_for('static', filename='style.css')}}" rel="stylesheet">
     </head>
 
-    <body class="min-h-screen flex flex-col">
+    <body class="h-full flex flex-col">
 
         <!-- Navbar is fixed on every page -->
-        <nav class="header-bar">
-            <h1 class="header-title text-white text-xl">Attendance Tracking App</h1>
-            <div class="header-actions flex items-center justify-between px-6 py-4">
+        <nav class="bg-linear-to-b from-cougar-crimson to-cougar-red  sticky top-0 z-10"> <!-- navbar sticks at the top while scrolling + stays above other content -->
+            <div class="flex justify-between items-center px-6 py-8">
+                <div class="text-white text-xl font-bold"> <!-- TODO: Add custom font -->
+                    Club Activity Tracker
+                </div>
+                <div class="flex gap-8 text-white">
+                    <a href=" {{ url_for('index') }} ">
+                        Home
+                    </a>
+                    <a href=" {{ url_for('admin.admin_profile') }} ">
+                        Admin
+                    </a>
+                    <a href=" {{ url_for('analytics.data_view') }} ">
+                        Data
+                    </a>
+                    <a href=" {{ url_for('auth.login') }} ">
+                        Login
+                    </a>
 
-                <ul class="flex gap-8 text-base text-white">
-                    <li class="relative cursor-pointer">
-                    <!-- Menu items: -->
-                    <!-- Home -->
-                    <a href="/" class="hover:after:w-full after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300">Home</a></li>
-                    <li class="relative cursor-pointer">
-
-                    <!-- Login -->
-                    <a href="/h/auth/login" class="hover:after:w-full after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300">Login</a></li>
-                    <li class="relative cursor-pointer">
-
-                    <!-- Admin Home -->
-                    <a href="/h/admin/home" class="hover:after:w-full after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300">Admin Home</a></li>
-                    <li class="relative cursor-pointer">
-                </ul>
+                </div>
             </div>
-
         </nav>
 
-        <!-- Page specific content -->
 
         <!-- Individual page name -->
-        <h1>{% block name %}{{name}}{% endblock %}</h1>
+        {% block content %}
 
-        <main class="grow pt-20 text-3xl">
-            {% block content %}
-                {# content goes here #}
-            {% endblock %}
-        </main>
-
+        {% endblock %}
         <!-- Footer stuff -->
-        <footer class="footy">
-                Attendance Tracking App 2025
+
+        <!-- main footer container -->
+        <footer class="bg-linear-to-b from-cougar-gray to-gray-600">
+            <div class="max-w-7xl mx-auto px-4 py-4 text-white">
+
+                <!-- top section containing title + info + gh link -->
+                <div class="flex justify-center items-center gap-16 mb-2">
+                  <div class="text-center">
+                    <h3 class="text-xl font-bold mb-1.5 ">Club Activity Tracking App</h3>
+                    <p><strong>2025</strong> __init__to win it</p>
+                  </div>
+
+                    <!-- github link -->
+                    <!-- opens new tab to repo -->
+                    <a href="https://github.com/lacroixmeariver/WSU_Cpts_322" target="_blank"
+                    class="text-white hover:text-cougar-crimson transition-colors">
+                        <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                </div>
+
+            </div>
         </footer>
 
     </body>

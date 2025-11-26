@@ -154,4 +154,6 @@ def assign_club():
 def admin_profile():
     """Go to user dashboard."""
     auth = "uid" in flask.session
-    return flask.render_template("admin_home.html", authenticated=auth)
+    un = flask.session.get("uid")
+
+    return flask.render_template("admin_home.html", authenticated=auth, user=un)

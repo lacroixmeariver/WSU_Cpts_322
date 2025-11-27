@@ -1,31 +1,45 @@
 {% extends 'base.html' %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" >
-</head>
-        <!-- Main content -->
-        <div class="main-content">
-            {% block content %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Dashboard</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" >
+    </head>
+
+    <!-- Main content -->
+    {% block content %}
+        <main class="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">
+
+            <!-- container for the header + cards -->
+            <div class="max-w-4xl mx-auto mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">User Dashboard</h1>
+                <p class="mb-8 text-xl">Select a data view:</p>
+
                 <!-- Tiles for quick stats -->
-                <div class="card-grid">
-                    <a href="{{ url_for('analytics.room_activity') }}" class="card-tile">Activity Trend</a>
-                    <a href="{{ url_for('analytics.usage') }}" class="card-tile">Room Usage</a>
+
+                <!-- grid container -->
+                <div class="grid grid-cols-2 gap-6 m-4">
+
+                    <!-- card for activity trend -->
+                    <a href="{{ url_for('analytics.room_activity') }}"
+                        class="block bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center justify-center m-4 font-semibold">
+                            <h3 class="text-white text-2xl text-center">Activity Trend</h3>
+                        </div>
+                    </a>
+
+                    <!-- card for room usage -->
+                    <a href="{{ url_for('analytics.usage') }}"
+                        class="bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all">
+                        <div class="flex items-center justify-center m-4 font-semibold">
+                            <h3 class="text-white text-2xl text-center">Room Usage</h3>
+                        </div>
+                    </a>
+
                 </div>
-
-            {% endblock %}
-
-        </div>
-
-        <!-- Can't get the spacing right on this logo but we'll keep on trucking -->
-        <div class="footy">
-
-        </div>
-    </body>
-
-
-
+            </div>
+        </main>
+    {% endblock %}
 </html>

@@ -18,6 +18,7 @@ dependencies = [
     "imap_tools",
     "apscheduler",
     "Flask-APScheduler",
+    "python-dotenv",
 ]
 
 [project.optional-dependencies]

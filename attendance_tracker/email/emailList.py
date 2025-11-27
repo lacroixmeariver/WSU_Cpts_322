@@ -123,7 +123,35 @@ def get_admin_emails(db_path: Path) -> list[str]:
     return emails
 
 
-def send_email_to_admins(db_path: Path, email_content: MIMEMultipart) -> None:
+def verify_admin_email(db_path: Path, email: str) -> bool:
+    """Check if an email is in the admin_emails table."""
+    with sqlite3.connect(db_path) as conn:
+        cursor = conn.execute(
+            "SELECT 1 FROM admin_emails WHERE admin_email = ?",
+            (email,),
+        )
+        result = cursor.fetchone()
+        return result is not None
+
+
+def send_email_to_single_user(db_path: Path, user_email: str, email_content: MIMEMultipart) -> None:
+    """Send an email to a specific user email."""
+    configure(db_path)
+    mail_password = os.getenv("mail_password")
+    mail_sender = os.getenv("mail_username")
+
+    if not mail_password or not mail_sender:
+        raise ValueError("Missing email credentials, add to .env file")
+    email_content["To"] = user_email
+    email_content["From"] = mail_sender
+    with SMTP("smtp.gmail.com", 587) as smtp:  # TODO: CHANGE TO OUTLOOK FOR DEPLOYMENT
+        smtp.starttls()
+        smtp.login(mail_sender, mail_password)
+        smtp.send_message(email_content)
+        print(f"Sent email to {user_email}")
+
+
+def send_email_to_all_admins(db_path: Path, email_content: MIMEMultipart) -> None:
     """Send an email to all admin emails."""
     configure(db_path)
     mail_password = os.getenv("mail_password")
@@ -139,11 +167,27 @@ def send_email_to_admins(db_path: Path, email_content: MIMEMultipart) -> None:
         raise ValueError("Missing email credentials, add to .env file")
     email_content["To"] = compound_receiver
     email_content["From"] = mail_sender
-    with SMTP("smtp.gmail.com", 587) as smtp:
+    with SMTP("smtp.gmail.com", 587) as smtp:  # TODO: CHANGE TO OUTLOOK FOR DEPLOYMENT
         smtp.starttls()
         smtp.login(mail_sender, mail_password)
         smtp.send_message(email_content)
         print(f"Sent email to {compound_receiver}")
+
+
+def send_recovery_email(user_email, recovery_link):
+    """Send a recovery email to the user with their password reset link."""
+    print(f"Sending recovery email to {user_email} with password")
+    subject = "Club Tracker Password Recovery"
+    body = f"Hello, {user_email}!\n\n"
+    body += "We received a request to reset your password for the Club Tracker system.\n"
+    body += "To reset your password, please click the link below:\n\n"
+    body += f"{recovery_link}\n\n"
+    body += "If you did not request a password reset, please ignore this email.\n\n"
+    body += "Thank you, VCEA Club Tracker"
+    msg = MIMEMultipart()
+    msg["Subject"] = subject
+    msg.attach(MIMEText(body, "plain"))
+    send_email_to_all_admins(user_email, msg)
 
 
 def send_error_email(db_path: Path) -> None:
@@ -168,7 +212,7 @@ def send_error_email(db_path: Path) -> None:
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain"))
 
-    send_email_to_admins(db_path, msg)
+    send_email_to_all_admins(db_path, msg)
 
 
 def send_report_email(db_path: Path) -> None:
@@ -230,7 +274,7 @@ def send_report_email(db_path: Path) -> None:
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain"))
 
-    send_email_to_admins(db_path, msg)
+    send_email_to_all_admins(db_path, msg)
 
 
 def get_monthly_room_usage(db_path: Path) -> dict:

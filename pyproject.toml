@@ -15,6 +15,7 @@ dependencies = [
     "gunicorn",
     "imap_tools",
     "Jinja2",
+    "dotenv",
 ]
 
 [project.optional-dependencies]

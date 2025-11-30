@@ -132,6 +132,15 @@ def create_app() -> AttendanceTracker:
         minute=0,
         args=[db_path],
     )
+    # schedule email job for every day at 3am to load new data
+    scheduler.add_job(
+        func=_load_from_email,
+        trigger="cron",
+        id="daily_email_load",
+        hour=3,
+        minute=0,
+        args=[db_path],
+    )
     scheduler.start()
 
     # get secret to save in config for session handling

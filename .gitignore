@@ -13,4 +13,4 @@ temp.py
 .DS_Store
 
 # dont commit generated css page stuff
-attendance_tracker/static/*
+attendance_tracker/static/style.css

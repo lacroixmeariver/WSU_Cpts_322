@@ -15,7 +15,9 @@ dependencies = [
     "gunicorn",
     "imap_tools",
     "Jinja2",
-    "dotenv",
+    "apscheduler",
+    "Flask-APScheduler",
+    "python-dotenv",
 ]
 
 [project.optional-dependencies]

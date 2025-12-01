@@ -1,0 +1,14 @@
+# do not load these files into docker build context to speed up build times!
+.github/
+.ruff_cache/
+.venv/
+*.egg-info
+*/pycache/
+build/
+docs/
+resources/
+tools/
+.gitignore
+.pre-commit-config.yaml
+README.md
+temp.py

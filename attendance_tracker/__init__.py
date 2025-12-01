@@ -10,6 +10,7 @@ import sqlite3
 import click
 import flask
 from flask_apscheduler import APScheduler
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from attendance_tracker.app import AttendanceTracker
 from attendance_tracker.controllers.admin import ADMIN
@@ -107,6 +108,7 @@ def create_app() -> AttendanceTracker:
     """Entry point for flask app."""
     app = AttendanceTracker(__name__, instance_relative_config=True)
     scheduler = APScheduler()
+    app.wsgi_app = ProxyFix(app=app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
     db_path = pathlib.Path("./sqlite/attendance_tracker.db")
     if not db_path.exists():  # if dir does not exist mkdir + db

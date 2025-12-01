@@ -25,3 +25,9 @@ shell scripts located in ./tools directory
 | `flask --app attendance_tracker load-from-email` | load email data from an email into the tables | - |
 | `flask --app attendance_tracker gen-sample-data` | creates sample csv data into /docs | - |
 | `flask --app attendance_tracker send-email-test` | sends test emails /docs | - |
+
+
+## Docker Help
+- Docker containers are used to handle multiple services for this project, but they are all managed using docker compose which allows users to build and run automatically with a single command!
+- when starting the project from scratch, make sure you have docker desktop installed and internet access, then run `docker compose up --build -d`. This will build all the individual containers, pulling updated versions from the web as needed, and then launch the services in detached mode! From there the web service will be available on **localhost:8001**, which is a placeholder until the final hostname is determined.
+- At any point all of the services can be stopped by running the command `docker compose down`

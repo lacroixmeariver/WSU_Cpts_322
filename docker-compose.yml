@@ -1,0 +1,20 @@
+services:
+  app:
+    build:
+      context: .                  # in root directory
+      dockerfile: Dockerfile.app  # build Dockerfile.app
+    ports:
+      - "8001:8000"               # bind host 8001 to default docker network 8000
+    volumes:
+      - sqlite:/app/sqlite
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx # same as above
+    ports:
+      - "80:80"   # nginx default ok for now
+      - "443:443" # supports https apparently
+    depends_on:
+      - app       # guarantee app container loaded **BEFORE** nginx container
+volumes:
+  sqlite:

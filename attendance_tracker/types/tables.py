@@ -51,7 +51,7 @@ class InputData(NamedTuple):
     TABLE_NAME = "INPUT_DATA"
 
     building: str
-    room_num: int
+    room_num: str
     times_accessed: int
     access_succeed: int
     access_fail: int
@@ -67,10 +67,10 @@ class InputData(NamedTuple):
     def from_list(cls, csv_line: list[str]) -> Self:
         """Create InputData instance from raw list of str input."""
         match csv_line:
-            case [b, r, _, t, s, f, d]:
+            case [b, r, t, s, f, d]:
                 return cls(
                     b,
-                    int(r),
+                    r,
                     int(t),
                     int(s),
                     int(f),

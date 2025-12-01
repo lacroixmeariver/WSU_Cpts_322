@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS CLUB_DATA;
 DROP TABLE IF EXISTS INPUT_DATA;
 DROP TABLE IF EXISTS ROOM_LOG;
 DROP TABLE IF EXISTS AUTH;
+DROP TABLE IF EXISTS EMAIL_LOG;
 
 CREATE TABLE club_data (
     club_name TEXT,
@@ -35,4 +36,9 @@ CREATE TABLE auth (
     username TEXT,
     password_ TEXT,
     PRIMARY KEY (username)
-)
+);
+
+CREATE TABLE email_log(
+    email_id Text,
+    PRIMARY KEY (email_id)
+);

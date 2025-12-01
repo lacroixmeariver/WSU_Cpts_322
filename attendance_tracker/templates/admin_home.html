@@ -1,51 +1,59 @@
 {% extends 'base.html' %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" >
-</head>
 
-    <body class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <div class="header-bar">
-            <div class="header-actions">
-                <div class="user-profile font-bold text-2xl">
+<!-- main page content -->
+{% block content %}
 
-                    {% if authenticated %}
-                        Hello, {{ user }}!
-                    {% else %}
-                        <div>Hello!</div>
-                    {% endif %}
+    <!-- main content container -->
+    <main class="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">
 
-                </div>
+        <div class="max-w-4xl mx-auto mb-8">
+             <!-- logged in users get an extra special greeting -->
+            {% if authenticated %}
+            <h1 class="text-3xl font-bold text-gray-900 pb-4">
+                Hello, {{ user }}!
+            </h1>
+            <p class="mb-8 text-xl">Select an action:</p>
+            {% else %}
+            <!-- users who are not logged in get less special greeting -->
+            <h1 class="text-3xl font-bold text-gray-900 pb-4">
+                Administrator Dashboard
+            </h1>
+            <p class="mb-8 text-xl">You must be logged in to view stats.</p>
+            {% endif %}
+
+            <!-- card container -->
+            <div class="grid grid-cols-3 gap-6 m-4">
+
+                <!-- card for adding clubs -->
+                <!-- TODO [Ingrid]: fix layout of add_club page -->
+                <a href="{{ url_for('admin.add_club') }}"
+                    class="block bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-center m-4 font-semibold">
+                        <h3 class="text-white text-2xl text-center">Add club</h3>
+                    </div>
+                </a>
+
+                <!-- card for assigning rooms to clubs -->
+                <!-- TODO [Ingrid]: fix layout of assign_club page -->
+                <a href="{{ url_for('admin.assign_club') }}"
+                    class="bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all">
+                    <div class="flex items-center justify-center m-4 font-semibold">
+                        <h3 class="text-white text-2xl text-center">Assign room</h3>
+                    </div>
+                </a>
+
+                <!-- card for viewing club info -->
+                <!-- TODO [Ingrid]: fix layout of club_info page -->
+                <a href="{{ url_for('admin.club_info') }}"
+                    class="bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all">
+                    <div class="flex items-center justify-center m-4 font-semibold">
+                        <h3 class="text-white text-2xl text-center">View clubs</h3>
+                    </div>
+                </a>
             </div>
         </div>
+    </main>
 
 
-        <!-- Main content -->
-        <div class="main-content">
-            {% block content %}
-                <!-- Tiles for quick stats -->
-                <div class="card-grid">
-                    <a href="{{ url_for('admin.add_club') }}" class="card-tile">Add Club</a>
-                    <a href="{{ url_for('admin.assign_club') }}" class="card-tile">Assign Room</a>
-                    <a href="{{ url_for('admin.club_info') }}" class="card-tile">View Clubs</a>
-
-                </div>
-
-            {% endblock %}
-
-        </div>
-
-        <!-- Can't get the spacing right on this logo but we'll keep on trucking -->
-        <div class="footy">
-
-        </div>
-    </body>
-
-
-
+  {% endblock %}
 </html>

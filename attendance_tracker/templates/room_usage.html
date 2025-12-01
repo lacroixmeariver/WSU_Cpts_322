@@ -2,36 +2,77 @@
 {% block title %} Data View {% endblock %}
 
 {% block content %}
-<body>
-    <div class="flex flex-col content-center" >
-    <div class="grow">
-        <canvas id="data-view" data="{{ chart_config }}" | tojson class="bg-white shadow rounded-lg p-4 sm:p-5">
-        </canvas>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <div class="flex justify-center gap-2">
-        <form action="{{ url_for('analytics.usage')}}" method="post">
+<main class="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">
 
-            <!-- Timeframe options -->
-            <div class="bg-white text-black border text-sm rounded-lg">
-                <label for="start_date" class="block text-sm font-medium text-white dark:text-gray-200">Choose a time period:</label>
-                <input type="date" name="start_date" required id="start_date">
-            </div>
-            <div class="bg-white text-black border text-sm rounded-lg">
-                <label for="end_date" class="block text-sm font-medium text-white dark:text-gray-200">Choose a time period:</label>
-                <input type="date" name="end_date" required id="end_date">
-                </select>
+        <div class="grid grid-cols-3 gap-6 mb-8">
+            <!-- card for chart -->
+            <div class="col-span-2 bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Data view</h2>
+
+                <!-- chart container -->
+                <div class="relative h-96 w-full">
+                    <canvas id="data-view" data="{{ chart_config }}" | tojson></canvas>
+                </div>
             </div>
 
-            <!-- Button -->
-            <div class="button bg-cougCrimson text-white border text-sm rounded-lg py-2">
-                <button type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
-    </div>
+            <!-- card for graph search criteria -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Search Criteria</h2>
+                <form method="post" class="space-y-4" action="{{ url_for('analytics.usage')}}">
 
-</body>
+                    <!-- Timeframe options -->
+
+                    <!-- dropdown for custom time frames -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                        <select name="duration" id="duration-select"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cougar-crimson focus:border-cougar-crimson outline-none">
+                            <option value="" class=""> Custom </option>
+                                {% for d, unit in [(2, "weeks"), (1, "month"), (3, "months"), (6, "months"), (1, "year")] %}
+                                    <option> {{ d }} {{ unit }} </option>
+                                {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- start date selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                        <input type="date" name="start_date" id="start_date"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2
+                        focus:ring-cougar-crimson focus:border-cougar-crimson outline-none">
+                    </div>
+
+                    <!-- end date selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                        <input type="date" name="end_date" id="end_date"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2
+                        focus:ring-cougar-crimson focus:border-cougar-crimson outline-none">
+                    </div>
+
+                    <!-- descending/ascending checkbox -->
+                    <div class="flex items-center gap-2 px-4 py-2">
+                        <input type="checkbox" name="descending" id="descending"
+                        class="w-4 h-4 border-gray-300 rounded" style="accent-color: #981e32;">
+                        <label for="descending" class="text-sm text-gray-700">Highest to lowest</label>
+                    </div>
+
+                    <!-- submit button -->
+                    <div class="md:col-1">
+                        <button type="submit"
+                            class="w-full md:w-auto bg-cougar-red text-white px-6 py-2 rounded-lg
+                            hover:bg-cougar-crimson transition-colors font-medium">
+                            Submit
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+</main>
+
+<!-- script for chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctx = document.getElementById("data-view");
     cfg = JSON.parse(ctx.getAttribute("data"));

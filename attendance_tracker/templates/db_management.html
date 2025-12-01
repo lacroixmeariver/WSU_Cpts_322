@@ -12,21 +12,17 @@
             <!-- card container -->
             <div class="grid grid-cols-2 gap-6 m-4">
 
-                <!-- card for assigning rooms to clubs -->
-                <!-- TODO [Ingrid]: fix layout of assign_club page -->
-                <form method="POST" action="{{ url_for('admin.upload_csv') }}"
-                    class="bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all">
-                    <button type="submit" class="flex items-center justify-center m-4 font-semibold">
-                        <h3 class="text-white text-2xl text-center">Upload Database Records From CSV</h3>
+                <!-- card for ingesting CSV data into the database -->
+                <form method="POST" action="{{ url_for('admin.upload_csv') }}">
+                    <button type="submit" class="w-full h-3/4 bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all flex items-center justify-center">
+                        <h3 class="text-white text-2xl font-semibold">Upload Database Records From CSV</h3>
                     </button>
                 </form>
 
-                <!-- card for assigning rooms to clubs -->
-                <!-- TODO [Ingrid]: fix layout of assign_club page -->
-                <form method="POST" action="{{ url_for('admin.dump_db') }}"
-                    class="bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all">
-                    <button type="submit" class="flex items-center justify-center m-4 font-semibold">
-                        <h3 class="text-white text-2xl text-center">Empty Database Records</h3>
+                <!-- card for resetting database -->
+                <form method="POST" action="{{ url_for('admin.dump_db') }}">
+                    <button type="submit" class="w-full h-3/4 bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all flex items-center justify-center">
+                        <h3 class="text-white text-2xl font-semibold">Empty Database Records</h3>
                     </button>
                 </form>
 

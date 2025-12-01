@@ -2,10 +2,10 @@
 {% block title %} Clubs {% endblock %}
 
 {% block content %}
-<div class="main-content justify justify-items-center">
+<main class="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">
   <form action="{{ url_for('admin.club_config', club_name=club_name) }}" method="post" class="space-y-6">
     Club configuration
-    <div class="flex justify-center mt-10">
+    <div class="">
       <div>
         {% for field in club %}
         <div class="flex items-center justify-between space-x-2">
@@ -25,6 +25,6 @@
       Save changes
     </button>
   </form>
-</div>
+</main>
 
 {% endblock %}

@@ -30,12 +30,12 @@ def configure(db_path: Path) -> None:
 # TODO: COMMENTED OUT TO PREVENT SPAMMING USERS DURING TESTING
 
 
-def add_admin_email(db_path: Path, email: str, permanent: bool = False) -> None:
+def add_admin_email(conn: sqlite3.Connection, email: str, permanent: bool = False) -> None:
     """Add an admin email to the admin_emails table."""
     # permanent is only used for superadmins
     # default to False for normal admins
     try:
-        with sqlite3.connect(db_path) as conn:
+        with conn:
             conn.execute(
                 "INSERT INTO admin_emails (admin_email, permanent) VALUES (?,?)",
                 (email, permanent),
@@ -45,13 +45,13 @@ def add_admin_email(db_path: Path, email: str, permanent: bool = False) -> None:
         print(f"Admin email {email} already exists, not adding duplicate.")
 
 
-def remove_admin_email(db_path: Path, email: str) -> None:
+def remove_admin_email(conn: sqlite3.Connection, email: str) -> None:
     """Remove an admin email from the admin_emails table."""
     try:
-        if is_permanent_admin(db_path, email):
+        if is_permanent_admin(conn, email):
             print(f"Admin email {email} is a permanent superadmin, cannot remove through webapp.")
             return
-        with sqlite3.connect(db_path) as conn:
+        with conn:
             conn.execute(
                 "DELETE FROM admin_emails WHERE admin_email = ?",
                 (email,),
@@ -61,9 +61,9 @@ def remove_admin_email(db_path: Path, email: str) -> None:
         print(f"Admin email {email} does not exist, cannot remove.")
 
 
-def is_permanent_admin(db_path: Path, email: str) -> bool:
+def is_permanent_admin(conn: sqlite3.Connection, email: str) -> bool:
     """Check if an admin email is permanent."""
-    with sqlite3.connect(db_path) as conn:
+    with conn:
         cursor = conn.execute(
             "SELECT permanent FROM admin_emails WHERE admin_email = ?",
             (email,),

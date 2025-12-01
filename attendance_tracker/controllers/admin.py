@@ -147,7 +147,7 @@ def assign_club():
             conn.commit()
         location = flask.url_for("admin.club_config", club_name=club)
         return flask.redirect(location)
-    return flask.render_template("assign_club.html")
+    return flask.render_template("assign_club.html", title="ASSIGN ROOM TO CLUB")
 
 
 @ADMIN.route("/dashboard")  # type: ignore
@@ -156,4 +156,4 @@ def admin_profile():
     auth = "uid" in flask.session
     un = flask.session.get("uid")
 
-    return flask.render_template("admin_home.html", authenticated=auth, user=un)
+    return flask.render_template("admin_home.html", authenticated=auth, user=un, title="DASHBOARD")

@@ -95,7 +95,7 @@ def sign_up() -> str:
         "login.html",
         name="LOGIN PAGE",
         title="LOGIN VIEW",
-        action="Register",
+        action="Login",
         username=un,
         authenticated=flask.session.get("uid") is not None,
     )

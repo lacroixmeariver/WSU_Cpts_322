@@ -24,6 +24,7 @@ shell scripts located in ./tools directory
 | `flask --app attendance_tracker init-db` | deletes tables and recreates schema from scratch | - |
 | `flask --app attendance_tracker load-from-email` | load email data from an email into the tables | - |
 | `flask --app attendance_tracker gen-sample-data` | creates sample csv data into /docs | - |
+| `flask --app attendance_tracker send-email-test` | sends test emails /docs | - |
 
 
 ## Docker Help

@@ -151,9 +151,31 @@ def assign_club():
 
 
 @ADMIN.route("/dashboard")  # type: ignore
-def admin_profile():
+@auth.required
+def admin_profile() -> str:
     """Go to user dashboard."""
     auth = "uid" in flask.session
     un = flask.session.get("uid")
 
     return flask.render_template("admin_home.html", authenticated=auth, user=un, title="DASHBOARD")
+
+
+@ADMIN.route("/db-management", methods=["GET", "POST"])
+@auth.required
+def db_management() -> str:
+    """DB Management Tools."""
+    return flask.render_template("db_management.html")
+
+
+@ADMIN.route("/dump-db", methods=["POST"])
+@auth.required
+def dump_db() -> str:
+    """Export Database Contents as CSV before wiping database contents."""
+    raise NotImplementedError
+
+
+@ADMIN.route("/upload-csv", methods=["POST"])
+@auth.required
+def upload_csv() -> str:
+    """Attempt to load the given CSV file into database."""
+    raise NotImplementedError

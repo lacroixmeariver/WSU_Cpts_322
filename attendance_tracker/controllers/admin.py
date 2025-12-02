@@ -88,7 +88,6 @@ def add_club():
     """Add a club to the db."""
     if flask.request.method == "POST":
         club = flask.request.form["club_name"]
-
         conn: sqlite3.Connection = flask.current_app.get_db()  # type: ignore
         cursor = conn.cursor()
 
@@ -120,35 +119,37 @@ def add_club():
 @auth.required
 def assign_club():
     """Assign a room to a club."""
+    conn: sqlite3.Connection = flask.current_app.get_db()  # type: ignore
+    cursor = conn.cursor()
     if flask.request.method == "POST":
         club = flask.request.form["assigned_club"]
-
-        conn: sqlite3.Connection = flask.current_app.get_db()  # type: ignore
-        cursor = conn.cursor()
-
-        club_data = list(flask.request.form.values())
+        building = flask.request.form["building"]
+        room_num = flask.request.form["room_num"]
 
         cursor.execute(
             """SELECT ASSIGNED_CLUB
                 FROM ROOM_LOG
-                where ASSIGNED_CLUB=?""",
-            (club,),
+                WHERE building = ? AND room_num = ?""",
+            (building, room_num),
         )
 
         result = cursor.fetchone()
 
         if result:
-            return flask.render_template("assign_club.html")
+            return flask.redirect(flask.url_for("admin.club_info"))
         else:
-            conn.cursor().execute(
-                "INSERT INTO ROOM_LOG\
-                VALUES (?,?,?)",
-                club_data,
+            cursor.execute(
+                """INSERT INTO room_log
+            (building, room_num, assigned_club) VALUES (?,?,?)
+            """,
+                (building, room_num, club),
             )
-            conn.commit()
-        location = flask.url_for("admin.club_config", club_name=club)
-        return flask.redirect(location)
-    return flask.render_template("assign_club.html")
+        conn.commit()
+        return flask.redirect(flask.url_for("admin.club_info"))
+
+    cursor.execute("SELECT club_name FROM club_data ORDER BY club_name")
+    clubs = [row[0] for row in cursor.fetchall()]
+    return flask.render_template("assign_club.html", club=clubs)
 
 
 @ADMIN.route("/dashboard")  # type: ignore

@@ -29,6 +29,8 @@ def configure(db_path: Path) -> None:
 # TODO: UNCOMMENT THE PERMANENT SUPERADMIN EMAILS BEFORE DEPLOYMENT
 # TODO: COMMENTED OUT TO PREVENT SPAMMING USERS DURING TESTING
 
+# had to add in conn as an argument instead of dbpath to be able to use it in ADMIN
+
 
 def add_admin_email(conn: sqlite3.Connection, email: str, permanent: bool = False) -> None:
     """Add an admin email to the admin_emails table."""

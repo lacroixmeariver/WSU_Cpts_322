@@ -7,6 +7,7 @@ import sqlite3
 import flask
 
 from attendance_tracker.controllers import auth
+from attendance_tracker.email.emailList import add_admin_email, remove_admin_email
 from attendance_tracker.types import tables
 
 ADMIN = flask.Blueprint(
@@ -87,7 +88,6 @@ def add_club():
     """Add a club to the db."""
     if flask.request.method == "POST":
         club = flask.request.form["club_name"]
-
         conn: sqlite3.Connection = flask.current_app.get_db()  # type: ignore
         cursor = conn.cursor()
 
@@ -119,30 +119,30 @@ def add_club():
 @auth.required
 def assign_club():
     """Assign a room to a club."""
+    conn: sqlite3.Connection = flask.current_app.get_db()  # type: ignore
+    cursor = conn.cursor()
     if flask.request.method == "POST":
         club = flask.request.form["assigned_club"]
-
-        conn: sqlite3.Connection = flask.current_app.get_db()  # type: ignore
-        cursor = conn.cursor()
-
-        club_data = list(flask.request.form.values())
+        building = flask.request.form["building"]
+        room_num = flask.request.form["room_num"]
 
         cursor.execute(
             """SELECT ASSIGNED_CLUB
                 FROM ROOM_LOG
-                where ASSIGNED_CLUB=?""",
-            (club,),
+                WHERE building = ? AND room_num = ?""",
+            (building, room_num),
         )
 
         result = cursor.fetchone()
 
         if result:
-            return flask.render_template("assign_club.html")
+            return flask.redirect(flask.url_for("admin.club_info"))
         else:
-            conn.cursor().execute(
-                "INSERT INTO ROOM_LOG\
-                VALUES (?,?,?)",
-                club_data,
+            cursor.execute(
+                """INSERT INTO room_log
+            (building, room_num, assigned_club) VALUES (?,?,?)
+            """,
+                (building, room_num, club),
             )
             conn.commit()
         location = flask.url_for("admin.club_config", club_name=club)
@@ -157,6 +157,42 @@ def admin_profile() -> str:
     auth = "uid" in flask.session
     un = flask.session.get("uid")
 
+    return flask.render_template("admin_home.html", authenticated=auth, user=un)
+
+
+@ADMIN.route("/email-list", methods=["GET", "POST"])
+@auth.required
+def display_admin_emails():
+    """Manipulate admin email list."""
+    with flask.current_app.app_context():
+        conn: sqlite3.Connection = flask.current_app.get_db()  # type: ignore
+
+    if flask.request.method == "POST":
+        action = flask.request.form.get("action")
+        if action == "add":
+            new_email = flask.request.form.get("new_email")
+            is_permanent = flask.request.form.get("permanent") == "on"
+
+            if new_email:
+                add_admin_email(conn, new_email, is_permanent)
+        elif action == "remove":
+            selected_email = flask.request.form.get("selected_email")
+            if selected_email:
+                print(selected_email)
+                remove_admin_email(conn, selected_email)
+        return flask.redirect(flask.url_for("admin.display_admin_emails"))
+    query = """
+            SELECT
+                admin_email
+            FROM
+                admin_emails
+            """
+    email_list = conn.execute(query).fetchall()
+    emails = [row[0] for row in email_list]
+    return flask.render_template(
+        "display_admin_emails.html",
+        list=emails,
+    )
     return flask.render_template("admin_home.html", authenticated=auth, user=un, title="DASHBOARD")
 
 

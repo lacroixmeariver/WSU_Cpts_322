@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+<!-- page title -->
+<title>{{title}}</title>
+
+{% block content %}
+<!-- main container -->
+<main class="flex-1 max-w-7xl mx-auto px-6 py-8">
+
+    <!-- title -->
+    <h1 class="text-2xl font-bold text-gray-900 mb-2">Communication</h1>
+
+    <!-- card/container for the email list -->
+    <div class="bg-white shadow-md rounded-lg p-8">
+
+        <!-- title + blurb -->
+        <div class="font-bold">Email List
+            <p class="text-gray-500 text-sm font-medium ">Emails listed will receive notification emails:</p>
+
+        {% if list %}
+        <div>
+            <!-- admin email list -->
+            {% for email in list %}
+                <button class="m-2 w-full p-4 font-medium text-gray-900 bg-gray-100 rounded-lg hover:bg-gray-200 transition-color duration-200" onclick="">
+                    <!-- TODO [Ingrid]: Add edit functionality? -->
+                    {{ email }}
+                </button>
+            {% endfor %}
+        </div>
+        {% else %}
+            <!-- no emails present -->
+            <div class="p-8 text-center">
+                <img class="mx-auto w-32 h-32 mt-5 opacity-65 p-4" src=" {{ url_for('static', filename='images/sleepy_cat.png') }} " alt="">
+                <p class="text-gray-500 text-sm font-medium">No admin emails found.</p>
+                <p class="text-gray-500 text-sm font-medium">Please add one using options below.</p>
+            </div>
+        {% endif %}
+
+        <!-- container for modal option buttons -->
+        </div>
+            <div class="mt-9">
+                <div class="grid grid-cols-4 gap-6 m-4">
+
+                    <!-- opens the add email modal -->
+                    <button onclick="openAddModal()"
+                        class="px-6 py-3 bg-cougar-red hover:bg-cougar-crimson text-white font-semibold rounded-lg transition-color duration-200">
+                        Add Email
+                    </button>
+
+                    <!-- opens the remove email modal -->
+                    <button onclick="openRemoveModal()"
+                        class="px-6 py-3 bg-cougar-red hover:bg-cougar-crimson text-white font-semibold rounded-lg transition-color duration-200">
+                        Remove Email
+                    </button>
+
+                    <!-- button for ?? -->
+                    <button onclick=""
+                        class="px-6 py-3 bg-cougar-red hover:bg-cougar-crimson text-white font-semibold rounded-lg transition-color duration-200">
+                        ERROR MSGS?
+                    </button>
+
+                    <!-- button for ?? -->
+                    <button onclick=""
+                        class="px-6 py-3 bg-cougar-red hover:bg-cougar-crimson text-white font-semibold rounded-lg transition-color duration-200">
+                        SEND REPORT?
+                    </button>
+
+                </div>
+            </div>
+        </div>
+</main>
+
+<!-- modal for adding emails -->
+<div id="addEmailModal" class="hidden fixed inset-0 overflow-y-auto h-full w-full z-50">
+
+    <!-- modal container/card -->
+    <div class="relative top-20 mx-auto p-5 w-125 shadow-lg rounded-lg bg-white">
+
+        <!-- [x] button to close -->
+        <div class="justify-between items-center pb-3">
+            <button onclick="closeAddModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">
+            &times;
+            </button>
+        </div>
+
+        <!-- add email title -->
+        <h3 class="font-bold text-2xl text-gray-900">Add new email</h3>
+
+        <!-- add email form -->
+        <form action="{{ url_for('admin.display_admin_emails') }}" method="post" class="mt-2 space-y-4">
+            <input type="hidden" name="action" value="add">
+
+            <!-- email textbox input -->
+            <div>
+                <input type="email" name="new_email" id="new_email" placeholder="admin@wsu.edu" required
+                class="w-full px-4 py-2 border border-gray-200 rounded-md text-gray-900 focus:ring-2 focus:ring-cougar-crimson focus:border-cougar-crimson outline-none">
+            </div>
+
+            <!-- modal buttons -->
+            <div class="flex gap-3 pt-4 border-t border-gray-200">
+
+                <!-- cancel button -->
+                <button type="button" onclick="closeAddModal()" class="flex-1 px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300  transition-colors font-medium">
+                    Cancel
+                </button>
+
+                <!-- add button -->
+                <button type="submit" class="flex-1 px-4 py-2 bg-cougar-red text-white rounded-lg hover:bg-cougar-crimson transition-colors font-medium">
+                    Add
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- remove email modal -->
+<div id="removeEmailModal" class="hidden fixed inset-0 overflow-y-auto h-full w-full z-50">
+
+    <!-- modal container/card -->
+    <div class="relative top-20 mx-auto p-5 w-125 shadow-lg rounded-lg bg-white">
+
+        <!-- [x] button to close -->
+        <div class="justify-between items-center pb-3">
+            <button onclick="closeRemoveModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">
+            &times;
+            </button>
+        </div>
+
+        <!-- remove email title -->
+        <h3 class="font-bold text-2xl text-gray-900">Remove Email</h3>
+
+        <!-- remove email form -->
+        <form action="{{ url_for('admin.display_admin_emails') }}" method="post" class="mt-2 space-y-4">
+            <input type="hidden" name="action" value="remove">
+
+            <!-- email dropdown -->
+            <div class="flex items-start">
+
+                <!-- selections -->
+                <select name="selected_email" id="email-select" class="w-full px-4 py-3 border border-gray-200 rounded-md focus:ring-2 focus:ring-cougar-crimson focus:border-cougar-crimson outline-none">
+                    {% for email in list %}
+                        <option value="{{email}}">{{email}}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+
+            <!-- modal buttons -->
+            <div class="flex gap-3 pt-4 border-t border-gray-200">
+
+                <!-- cancel button -->
+                <button type="button" onclick="closeRemoveModal()" class="flex-1 px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300  transition-colors font-medium">
+                    Cancel
+                </button>
+
+                <!-- remove button -->
+                <button type="submit" class="flex-1 px-4 py-2 bg-cougar-red text-white rounded-lg hover:bg-cougar-crimson transition-colors font-medium">
+                    Remove
+                </button>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // for bringing modal windows in/out of hidden state
+
+    // add email scripts
+    function openAddModal()
+    {
+    document.getElementById('addEmailModal').classList.remove('hidden');
+    }
+
+    function closeAddModal()
+    {
+    document.getElementById('addEmailModal').classList.add('hidden');
+    }
+
+    // remove email scripts
+    function openRemoveModal()
+    {
+        document.getElementById('removeEmailModal').classList.remove('hidden');
+    }
+
+    function closeRemoveModal()
+    {
+        document.getElementById('removeEmailModal').classList.add('hidden');
+    }
+
+</script>
+
+
+{% endblock %}

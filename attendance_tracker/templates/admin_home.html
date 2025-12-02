@@ -53,12 +53,18 @@
                     </div>
                 </a>
 
-                <!-- card for viewing club info -->
-                <!-- TODO [Ingrid]: fix layout of club_info page -->
+                <!-- card for viewing email info -->
+                <a href="{{ url_for('admin.display_admin_emails') }}"
+                    class="bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all">
+                    <div class="flex items-center justify-center m-4 font-semibold">
+                        <h3 class="text-white text-2xl text-center">Communication</h3>
+                
+                      
                 <a href="{{ url_for('admin.db_management') }}"
                     class="bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all">
                     <div class="flex items-center justify-center m-4 font-semibold">
                         <h3 class="text-white text-2xl text-center">Database Management</h3>
+                      
                     </div>
                 </a>
             </div>

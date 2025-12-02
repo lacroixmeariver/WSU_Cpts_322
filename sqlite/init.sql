@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS input_data;
 DROP TABLE IF EXISTS room_log;
 DROP TABLE IF EXISTS auth;
 DROP TABLE IF EXISTS email_log;
+DROP TABLE IF EXISTS admin_emails;
 
 CREATE TABLE club_data (
     club_name TEXT,

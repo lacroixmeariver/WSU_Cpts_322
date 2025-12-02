@@ -49,8 +49,8 @@ def _send_email_test(db_path: pathlib.Path) -> None:
     emailList.remove_club_temp(db_path, "Demo Club 1")
     emailList.add_club_temp(db_path, "Demo Club 1", "dylan")
     emailList.assign_room_temp(db_path, "Dana", "215", "Demo Club 1")
-    emailList.remove_admin_email(db_path, "dylan.kopitzke@wsu.edu")
-    emailList.add_admin_email(db_path, "dylan.kopitzke@wsu.edu")
+    emailList.remove_admin_email_dbpath(db_path, "dylan.kopitzke@wsu.edu")
+    emailList.add_admin_email_dbpath(db_path, "dylan.kopitzke@wsu.edu")
     emailList.send_error_email(db_path)
     emailList.send_report_email(db_path)
 

@@ -76,6 +76,50 @@ def is_permanent_admin(conn: sqlite3.Connection, email: str) -> bool:
     return False
 
 
+def add_admin_email_dbpath(db_path: Path, email: str, permanent: bool = False) -> None:
+    """Add an admin email to the admin_emails table."""
+    # permanent is only used for superadmins
+    # default to False for normal admins
+    try:
+        with sqlite3.connect(db_path) as conn:
+            conn.execute(
+                "INSERT INTO admin_emails (admin_email, permanent) VALUES (?,?)",
+                (email, permanent),
+            )
+        print(f"Added admin email: {email}")
+    except sqlite3.IntegrityError:
+        print(f"Admin email {email} already exists, not adding duplicate.")
+
+
+def remove_admin_email_dbpath(db_path, email: str) -> None:
+    """Remove an admin email from the admin_emails table."""
+    try:
+        if is_permanent_admin_dbpath(db_path, email):
+            print(f"Admin email {email} is a permanent superadmin, cannot remove through webapp.")
+            return
+        with sqlite3.connect(db_path) as conn:
+            conn.execute(
+                "DELETE FROM admin_emails WHERE admin_email = ?",
+                (email,),
+            )
+        print(f"Removed admin email: {email}")
+    except sqlite3.IntegrityError:
+        print(f"Admin email {email} does not exist, cannot remove.")
+
+
+def is_permanent_admin_dbpath(db_path: Path, email: str) -> bool:
+    """Check if an admin email is permanent."""
+    with sqlite3.connect(db_path) as conn:
+        cursor = conn.execute(
+            "SELECT permanent FROM admin_emails WHERE admin_email = ?",
+            (email,),
+        )
+        result = cursor.fetchone()
+        if result:
+            return bool(result[0])
+    return False
+
+
 def add_club_temp(db_path: Path, club_name: str, club_president: str) -> None:
     """Add club to the club table."""
     with sqlite3.connect(db_path) as conn:

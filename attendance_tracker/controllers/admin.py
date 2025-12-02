@@ -144,16 +144,15 @@ def assign_club():
             """,
                 (building, room_num, club),
             )
-        conn.commit()
-        return flask.redirect(flask.url_for("admin.club_info"))
-
-    cursor.execute("SELECT club_name FROM club_data ORDER BY club_name")
-    clubs = [row[0] for row in cursor.fetchall()]
-    return flask.render_template("assign_club.html", club=clubs)
+            conn.commit()
+        location = flask.url_for("admin.club_config", club_name=club)
+        return flask.redirect(location)
+    return flask.render_template("assign_club.html", title="ASSIGN ROOM TO CLUB")
 
 
 @ADMIN.route("/dashboard")  # type: ignore
-def admin_profile():
+@auth.required
+def admin_profile() -> str:
     """Go to user dashboard."""
     auth = "uid" in flask.session
     un = flask.session.get("uid")
@@ -162,6 +161,7 @@ def admin_profile():
 
 
 @ADMIN.route("/email-list", methods=["GET", "POST"])
+@auth.required
 def display_admin_emails():
     """Manipulate admin email list."""
     with flask.current_app.app_context():
@@ -193,3 +193,25 @@ def display_admin_emails():
         "display_admin_emails.html",
         list=emails,
     )
+    return flask.render_template("admin_home.html", authenticated=auth, user=un, title="DASHBOARD")
+
+
+@ADMIN.route("/db-management", methods=["GET", "POST"])
+@auth.required
+def db_management() -> str:
+    """DB Management Tools."""
+    return flask.render_template("db_management.html")
+
+
+@ADMIN.route("/dump-db", methods=["POST"])
+@auth.required
+def dump_db() -> str:
+    """Export Database Contents as CSV before wiping database contents."""
+    raise NotImplementedError
+
+
+@ADMIN.route("/upload-csv", methods=["POST"])
+@auth.required
+def upload_csv() -> str:
+    """Attempt to load the given CSV file into database."""
+    raise NotImplementedError

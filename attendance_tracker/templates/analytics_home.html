@@ -4,10 +4,13 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>User Dashboard</title>
+
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" >
     </head>
 
+    <title>
+        {{ title }}
+    </title>
     <!-- Main content -->
     {% block content %}
         <main class="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">

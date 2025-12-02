@@ -23,6 +23,7 @@ def home() -> str:
     """Home page for navigating to analytic functions."""
     return flask.render_template(
         "analytics_home.html",  # make actual home page later
+        title="ANALYTICS",
     )
 
 

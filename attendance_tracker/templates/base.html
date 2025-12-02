@@ -16,27 +16,27 @@
                     Club Activity Tracker
                 </div>
                 <div class="flex gap-8 text-white">
-                    <a href=" {{ url_for('index') }} ">
+                    <a href=" {{ url_for('index') }} " id="index-nav-link">
                         Home
                         </a>
                     {% if session.get('uid') %}
-                        <form action=" {{ url_for('auth.log_out') }} " method="post">
+                        <form action=" {{ url_for('auth.log_out') }} " id="logout-nav-link" method="post">
                             <button type="submit">
                             Log out
                             </button>
                         </form>
                     {% else %}
-                         <form action=" {{ url_for('auth.login') }} " method="post">
+                         <form action=" {{ url_for('auth.login') }} " id="login-nav-link" method="post">
                             <button type="submit">
                             Login
                             </button>
                         </form>
                     {% endif %}
 
-                    <a href=" {{ url_for('admin.admin_profile') }} ">
+                    <a href=" {{ url_for('admin.admin_profile') }} " id="admin-nav-link">
                         Admin
                     </a>
-                    <a href=" {{ url_for('analytics.home') }} ">
+                    <a href=" {{ url_for('analytics.home') }} " id="analytics-nav-link">
                         Analytics
                     </a>
                 </div>

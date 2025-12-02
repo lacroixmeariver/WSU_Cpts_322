@@ -57,7 +57,6 @@ class InputData(NamedTuple):
     access_fail: int
     date_entered: str
 
-    @property
     def insert_format(self) -> str:
         """Create insert string to be used with sqlite db."""
         cols = ", ".join(self._fields)

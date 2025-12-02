@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import pathlib
 import sqlite3
+from datetime import datetime
 
 import flask
 
@@ -205,13 +207,77 @@ def db_management() -> str:
 
 @ADMIN.route("/dump-db", methods=["POST"])
 @auth.required
-def dump_db() -> str:
+def dump_db() -> flask.Response:
     """Export Database Contents as CSV before wiping database contents."""
-    raise NotImplementedError
+    with flask.current_app.app_context():
+        conn: sqlite3.Connection = flask.current_app.get_db()  # type: ignore
+
+    csv_file = pathlib.Path("./sqlite/export_input_data.csv")
+    with (
+        csv_file.open("w", encoding="utf-8") as f,
+        pathlib.Path("./sqlite/init.sql").open("r", encoding="utf-8") as sql_script,
+    ):
+        # read and write input data to output file
+        f.write(",".join(tables.InputData._fields) + "\n")
+        query = "SELECT * FROM input_data ORDER BY date_entered"
+        cursor = conn.execute(query)
+        for row in cursor:
+            line = ",".join([str(r) for r in row]) + "\n"
+            f.write(line)
+
+        # read read in init table sql code and execute -> reset table
+        script = sql_script.read()
+        input_start = script.index("CREATE TABLE input_data")
+        create_input_data = script[input_start : script.index(";", input_start) + 1]
+        conn.execute("DROP TABLE IF EXISTS input_data;\n")
+        conn.execute(create_input_data)
+        conn.commit()
+
+    timestamp = datetime.today().strftime("%m_%d_%Y")
+    return flask.send_file(
+        csv_file.absolute(), mimetype="text/csv", as_attachment=True, download_name=f"input_data_{timestamp}.csv"
+    )
 
 
 @ADMIN.route("/upload-csv", methods=["POST"])
 @auth.required
-def upload_csv() -> str:
+def upload_csv() -> flask.Response:
     """Attempt to load the given CSV file into database."""
-    raise NotImplementedError
+    with flask.current_app.app_context():
+        conn: sqlite3.Connection = flask.current_app.get_db()  # type: ignore
+
+    # validate file arrived and is csv
+    if "input_csv" not in flask.request.files:
+        flask.flash("input uploaded file missing")
+        return flask.redirect(flask.url_for("admin.db_management"))  # type: ignore
+
+    f = flask.request.files["input_csv"]
+    if not (f.filename or "").endswith(".csv"):
+        flask.flash("input file is not the correct type")
+        return flask.redirect(flask.url_for("admin.db_management"))  # type: ignore
+
+    # validate format of the data
+    header = f.stream.readline().decode("utf-8").strip().split(",")
+    try:
+        compare = zip(header, tables.InputData._fields, strict=True)
+        if not all(map(lambda i: i[0] == i[1], compare)):
+            msg = "mismatched columns from csv"
+            raise ValueError(msg)
+    except ValueError as e:
+        flask.flash(f"input file rejected {e}")
+        return flask.redirect(flask.url_for("admin.db_management"))  # type: ignore
+
+    # file is valid, read into db
+    while True:
+        line = f.stream.readline().decode("utf-8").strip().split(",")
+        if not line[0]:
+            break  # exit when empty line hit
+        try:
+            row = tables.InputData.from_list(line)
+            conn.execute(row.insert_format(), row)
+        except ValueError as e:
+            flask.flash(f"bad record {e}")
+            return flask.redirect(flask.url_for("admin.db_management"))  # type: ignore
+
+    conn.commit()  # save changes
+    return flask.redirect(flask.url_for("admin.db_management"))  # type: ignore

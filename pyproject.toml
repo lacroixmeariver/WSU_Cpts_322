@@ -16,7 +16,6 @@ dependencies = [
     "gunicorn",
     "imap_tools",
     "Jinja2",
-    "imap_tools",
     "apscheduler",
     "Flask-APScheduler",
     "python-dotenv",

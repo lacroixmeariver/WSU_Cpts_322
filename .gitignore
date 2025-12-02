@@ -12,5 +12,7 @@ temp.py
 # dont commit MacOS files
 .DS_Store
 
-# dont commit generated css page stuff
+# dont commit generated css page stuff or test data
 attendance_tracker/static/style.css
+/docs/exampleDataWithDates.csv
+/sqlite/export_input_data.csv

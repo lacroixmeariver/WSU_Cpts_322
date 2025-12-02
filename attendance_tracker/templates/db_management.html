@@ -5,7 +5,7 @@
 {% block content %}
 
     <!-- main content container -->
-    <main class="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">
+    <main class="flex-2 max-w-7xl mx-auto px-6 py-8 w-full">
 
         <div class="max-w-4xl mx-auto mb-8">
 
@@ -13,19 +13,38 @@
             <div class="grid grid-cols-2 gap-6 m-4">
 
                 <!-- card for ingesting CSV data into the database -->
-                <form method="POST" action="{{ url_for('admin.upload_csv') }}">
-                    <button type="submit" class="w-full h-3/4 bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all flex items-center justify-center">
-                        <h3 class="text-white text-2xl font-semibold">Upload Database Records From CSV</h3>
+                <form method="POST" action="{{ url_for('admin.upload_csv') }}" class="flex flex-col gap-2" enctype="multipart/form-data">
+                    <button type="submit" class="w-full h-1/2 bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all flex items-center justify-center">
+                        <h3 class="text-white text-2xl font-semibold">Upload CSV File</h3>
                     </button>
+                    <label for="input_csv"
+                        class="flex items-center justify-center w-full h-1/4 text-white text-sm
+                            bg-cougar-gray hover:bg-cougar-crimson
+                            rounded-lg shadow p-6 hover:shadow-lg transition-all
+                            text-center cursor-pointer">
+                        Select CSV File
+                    </label>
+                    <input type="file" name="input_csv" id="input_csv" class="opacity-0" required>
                 </form>
 
                 <!-- card for resetting database -->
                 <form method="POST" action="{{ url_for('admin.dump_db') }}">
-                    <button type="submit" class="w-full h-3/4 bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all flex items-center justify-center">
+                    <button type="submit" class="w-full h-1/2 bg-cougar-red hover:bg-cougar-crimson rounded-lg shadow p-6 hover:shadow-lg transition-all flex items-center justify-center">
                         <h3 class="text-white text-2xl font-semibold">Empty Database Records</h3>
                     </button>
                 </form>
 
+            </div>
+            <div>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class="text-black text-xl">
+                        {% for message in messages %}
+                        <li>Upload failed: {{ message }}!</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
             </div>
 
         </div>

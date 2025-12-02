@@ -18,6 +18,7 @@ from attendance_tracker.controllers.analytics import ANALYTICS
 from attendance_tracker.controllers.auth import AUTH
 from attendance_tracker.controllers.ingest import INGEST
 from attendance_tracker.email.emailList import send_error_email, send_report_email
+from attendance_tracker.types import tables
 
 
 def _init_db(db_path: pathlib.Path) -> None:
@@ -55,19 +56,18 @@ def _send_email_test(db_path: pathlib.Path) -> None:
 
 
 def _model_data_with_date():
-    room_names = ["Demo Club 1", "Demo Club 2", "Demo Club 3"]
     today = datetime.date.today()
-    date_list = [today + datetime.timedelta(days=i) for i in range(0, 365, 7)]
+    date_list = [today - datetime.timedelta(days=i) for i in range(0, 365, 7)]
 
     # splitting the known rooms/numbers we have
     data = {
-        "Dana": [3, 51, 117, 213, 215, 216],
-        "Dana hall room": [216, 242],
-        "Dana hall rm": [246, 306],
-        "EEME": [207],
-        "Sloan": [242, 327],
+        "Dana": ["3", "51", "117", "213", "215", "216"],
+        "Dana hall room": ["216", "242"],
+        "Dana hall rm": ["246", "306"],
+        "EEME": ["207"],
+        "Sloan": ["242", "327"],
     }
-    listed: list[tuple[str, int]] = []
+    listed: list[tuple[str, str]] = []
     for key, values in data.items():
         listed.extend([(key, v) for v in values])
 
@@ -76,15 +76,7 @@ def _model_data_with_date():
     with out_path.open("w", newline="") as out_file:
         csv_writer = csv.writer(out_file)
 
-        header = [
-            "Building",
-            "RoomNum",
-            "RoomName",
-            "PatronNum",
-            "TotalPassed",
-            "TotalFailed",
-            "Date",
-        ]
+        header = tables.InputData._fields
         csv_writer.writerow(header)
         for date in date_list:
             for location in listed:
@@ -92,15 +84,14 @@ def _model_data_with_date():
                 patron_num_col = random.randint(0, 35)
                 total_allowed = random.randint(0, patron_num_col)
                 total_denied = patron_num_col - total_allowed
-                row = [
+                row = tables.InputData(
                     building,
                     room,
-                    random.choice(room_names),
                     patron_num_col,
                     total_allowed,
                     total_denied,
                     date.strftime("%Y-%m-%d"),
-                ]
+                )
                 csv_writer.writerow(row)
 
 

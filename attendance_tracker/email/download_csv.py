@@ -97,7 +97,7 @@ def _load_from_email(db_path: Path) -> None:
                         for line in reader:
                             inputs.append(tables.InputData.from_list(line))
 
-                        conn.executemany(inputs[0].insert_format, inputs)
+                        conn.executemany(inputs[0].insert_format(), inputs)
                         insert_query = f"SELECT COUNT(*) FROM {inputs[0].TABLE_NAME}"
                         count = conn.execute(insert_query).fetchone()
                         # print first column which is count
